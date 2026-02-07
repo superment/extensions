@@ -4,7 +4,7 @@ import { callbackLaunchCommand } from "raycast-cross-extension";
 import colorNamer from "color-namer";
 import { addToHistory } from "./lib/history";
 import { Color, PickColorCommandLaunchProps } from "./lib/types";
-import { getFormattedColor, getColorByProximity } from "./lib/utils";
+import { getFormattedColor, getColorByProximity, isMac } from "./lib/utils";
 
 export default async function command(props: PickColorCommandLaunchProps) {
   const { showColorName } = getPreferenceValues<Preferences.PickColor>();
@@ -16,7 +16,8 @@ export default async function command(props: PickColorCommandLaunchProps) {
       const { pickColor: importedPickColor } = await import("swift:../swift/color-picker");
       pickColor = importedPickColor;
     } else {
-      // Windows side implementation using rust
+      const { pick_color: importedPickColor } = await import("rust:../rust");
+      pickColor = importedPickColor;
     }
 
     const pickedColor = (await pickColor()) as Color | undefined;

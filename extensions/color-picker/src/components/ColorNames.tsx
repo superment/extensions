@@ -1,9 +1,9 @@
 import { Action, ActionPanel, Icon, List } from "@raycast/api";
 import { Color } from "color-namer";
-import { normalizeColorHex } from "../lib/utils";
+import { isMac, normalizeColorHex } from "../lib/utils";
 
 export const ColorNameListItem = ({ color }: { color: Color }) => {
-  const hexCode = color.hex.replace(/^#/, "");
+  const hexCode = isMac ? color.hex.replace(/^#/, "") : color.hex;
   return (
     <List.Item
       icon={{

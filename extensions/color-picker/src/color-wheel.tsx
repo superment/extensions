@@ -17,14 +17,15 @@ export default function Command({
   useEffect(() => {
     async function pickAndHandleColor() {
       try {
-        let pickColor: () => Promise<Color | undefined>;
+        let pickColor: () => Promise<Color | undefined | null>;
         if (isMac) {
           const { pickColor: importedPickColor } = await import("swift:../swift/color-picker");
           pickColor = importedPickColor;
         } else {
-          // Windows side implementation using rust
+          const { pick_color: importedPickColor } = await import("rust:../rust");
+          pickColor = importedPickColor;
         }
-        const pickedColor = (await pickColor()) as Color | undefined;
+        const pickedColor = (await pickColor()) as Color | undefined | null;
         if (!pickedColor) {
           return;
         }
