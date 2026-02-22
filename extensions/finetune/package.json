@@ -1,0 +1,68 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "finetune",
+  "title": "FineTune",
+  "description": "FineTune manage audio",
+  "icon": "finetune-icon.png",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "output",
+      "title": "Output Devices",
+      "description": "Per-app speaker volume, mute, and routing",
+      "mode": "view"
+    },
+    {
+      "name": "reset-all",
+      "title": "Reset All to 100%",
+      "description": "Reset all apps to 100% and unmute",
+      "mode": "no-view"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "defaultDeviceUID",
+      "type": "textfield",
+      "required": false,
+      "title": "Default device UID",
+      "description": "Optional. Used for the 'Default device' option in Route to Device.",
+      "placeholder": "Paste device UID"
+    },
+    {
+      "name": "deviceUIDOverrides",
+      "type": "textfield",
+      "required": false,
+      "title": "Device UID overrides",
+      "description": "Optional. If Route to Device sets a device to empty, add a line: Device Name=UID. One per line.",
+      "placeholder": "Studio Display Speakers=UID"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.103.0",
+    "@raycast/utils": "^2.2.1"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.0.4",
+    "@types/node": "22.13.10",
+    "@types/react": "19.0.10",
+    "eslint": "^9.22.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2"
+  },
+  "scripts": {
+    "dev": "ray develop",
+    "lint": "ray lint",
+    "fix-lint": "ray lint --fix",
+    "build:cli": "swiftc -O -o assets/finetune-audio-apps scripts/finetune-audio-apps.swift -framework AudioToolbox -framework AppKit -framework Foundation && swiftc -O -o assets/finetune-output-devices scripts/finetune-output-devices.swift -framework AudioToolbox -framework Foundation",
+    "build": "npm run build:cli 2>/dev/null || true && ray build",
+    "publish": "npx @raycast/api@latest publish",
+    "prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the \\`prepublishOnly\\` script and rerun \\`npm publish\\` again.\\nIf you wanted to publish it to the Raycast Store instead, use \\`npm run publish\\` instead.\\n\\n\" && exit 1"
+  },
+  "author": "jordanamblin",
+  "platforms": [
+    "macOS"
+  ],
+  "categories": [
+    "Applications"
+  ]
+}
