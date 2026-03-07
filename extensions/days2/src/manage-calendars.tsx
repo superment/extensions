@@ -22,7 +22,8 @@ function ManageCalendarsCommand() {
   );
 
   const { data: selectedIds, isLoading: selectedLoading } = useCachedPromise(
-    async (cals: GoogleCalendar[] | undefined) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (cals: GoogleCalendar[] | undefined, _key: number) => {
       if (!cals) return [];
       const stored = await getSelectedCalendarIds();
       return stored ?? cals.map((c) => c.id);
