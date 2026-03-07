@@ -1,5 +1,5 @@
 # Days 2 Changelog
 
-## [Initial Version] - 2026-03-07
+## [Initial Version] - {PR_MERGE_DATE}
 
 - Initial release

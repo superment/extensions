@@ -19,11 +19,11 @@ import {
   fetchPastAllDayEvents,
 } from "./google-calendar";
 import { getSelectedCalendarIds } from "./storage";
-import { AllDayEvent, DisplayMode, GoogleCalendar } from "./types";
+import { AllDayEvent, GoogleCalendar, DisplayMode } from "./types";
 import { formatCountdown, formatDate, nextDisplayMode } from "./utils";
 
 function Days2Command() {
-  const preferences = getPreferenceValues<{ displayMode: DisplayMode }>();
+  const preferences = getPreferenceValues<Preferences>();
   const [globalDisplayMode] = useState<DisplayMode>(
     preferences.displayMode ?? "days",
   );
