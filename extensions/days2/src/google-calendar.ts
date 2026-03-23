@@ -37,14 +37,22 @@ async function gcalFetch<T>(
 }
 
 export async function fetchCalendars(): Promise<GoogleCalendar[]> {
-  const data = await gcalFetch<GoogleCalendarListResponse>(
-    "/users/me/calendarList",
-    {
+  const calendars: GoogleCalendar[] = [];
+  let pageToken: string | undefined;
+
+  do {
+    const params: Record<string, string> = {
       showDeleted: "false",
       showHidden: "false",
-    },
-  );
-  return data.items ?? [];
+    };
+    if (pageToken) params.pageToken = pageToken;
+
+    const data = await gcalFetch<GoogleCalendarListResponse>("/users/me/calendarList", params);
+    calendars.push(...(data.items ?? []));
+    pageToken = data.nextPageToken;
+  } while (pageToken);
+
+  return calendars;
 }
 
 async function fetchAllDayEventsFromCalendar(
