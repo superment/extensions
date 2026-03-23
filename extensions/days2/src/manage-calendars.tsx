@@ -51,7 +51,7 @@ function ManageCalendarsCommand() {
   }, [calendars]);
 
   const handleDeselectAll = useCallback(async () => {
-    if (!calendars) return;
+    if (!calendars || calendars.length === 0) return;
     const primary = calendars.find((c) => c.primary);
     await setSelectedCalendarIds(primary ? [primary.id] : [calendars[0].id]);
     setRefreshKey((k) => k + 1);
