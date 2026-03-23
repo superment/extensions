@@ -47,7 +47,10 @@ export async function fetchCalendars(): Promise<GoogleCalendar[]> {
     };
     if (pageToken) params.pageToken = pageToken;
 
-    const data = await gcalFetch<GoogleCalendarListResponse>("/users/me/calendarList", params);
+    const data = await gcalFetch<GoogleCalendarListResponse>(
+      "/users/me/calendarList",
+      params,
+    );
     calendars.push(...(data.items ?? []));
     pageToken = data.nextPageToken;
   } while (pageToken);
