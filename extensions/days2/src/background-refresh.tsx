@@ -12,7 +12,11 @@ import { GoogleCalendar } from "./types";
 
 async function BackgroundRefreshCommand() {
   if (environment.launchType === LaunchType.UserInitiated) {
-    await launchCommand({ name: "days2", type: LaunchType.UserInitiated });
+    try {
+      await launchCommand({ name: "days2", type: LaunchType.UserInitiated });
+    } catch (error) {
+      console.error("Failed to launch days2 command:", error);
+    }
   }
 
   try {

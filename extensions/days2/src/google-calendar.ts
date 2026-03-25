@@ -1,4 +1,5 @@
 import { getAccessToken } from "@raycast/utils";
+import { showToast, Toast } from "@raycast/api";
 import {
   GoogleCalendar,
   GoogleCalendarListResponse,
@@ -30,6 +31,15 @@ async function gcalFetch<T>(
   if (!response.ok) {
     const errorText = await response.text();
     console.error(`Google Calendar API error (${response.status}):`, errorText);
+    try {
+      await showToast({
+        style: Toast.Style.Failure,
+        title: "Google Calendar API error",
+        message: `${response.status} ${response.statusText}`,
+      });
+    } catch (e) {
+      // ignore toast failures in non-UI contexts
+    }
     throw new Error(`Google Calendar API error: ${response.statusText}`);
   }
 

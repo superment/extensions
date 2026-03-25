@@ -5,8 +5,13 @@
   "description": "Countdown to all-day events from Google Calendar — see how many days until your next birthday, holiday, deadline, or milestone.",
   "icon": "icon.png",
   "author": "datboi",
-  "categories": ["Productivity"],
+  "categories": [
+    "Productivity"
+  ],
   "license": "MIT",
+  "platforms": [
+    "macOS"
+  ],
   "commands": [
     {
       "name": "days2",
@@ -37,9 +42,18 @@
       "required": false,
       "default": "days",
       "data": [
-        { "title": "Days", "value": "days" },
-        { "title": "Weeks + Days", "value": "weeks" },
-        { "title": "Months + Days", "value": "months" }
+        {
+          "title": "Days",
+          "value": "days"
+        },
+        {
+          "title": "Weeks + Days",
+          "value": "weeks"
+        },
+        {
+          "title": "Months + Days",
+          "value": "months"
+        }
       ]
     }
   ],

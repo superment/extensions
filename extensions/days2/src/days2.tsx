@@ -9,9 +9,11 @@ import {
   openExtensionPreferences,
   launchCommand,
   LaunchType,
+  showToast,
+  Toast,
 } from "@raycast/api";
 import { withAccessToken, useCachedPromise } from "@raycast/utils";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { google } from "./oauth";
 import {
   fetchCalendars,
@@ -34,16 +36,20 @@ function Days2Command() {
   const [searchText, setSearchText] = useState<string>("");
 
   // Fetch calendar list
-  const { data: calendars, isLoading: calendarsLoading } = useCachedPromise(
-    fetchCalendars,
-    [],
-    {
-      keepPreviousData: true,
-    },
-  );
+  const {
+    data: calendars,
+    isLoading: calendarsLoading,
+    error: calendarsError,
+  } = useCachedPromise(fetchCalendars, [], {
+    keepPreviousData: true,
+  });
 
   // Get selected calendar IDs
-  const { data: selectedIds, isLoading: selectedIdsLoading } = useCachedPromise(
+  const {
+    data: selectedIds,
+    isLoading: selectedIdsLoading,
+    error: selectedIdsError,
+  } = useCachedPromise(
     async (cals: GoogleCalendar[] | undefined) => {
       if (!cals) return [];
       const stored = await getSelectedCalendarIds();
@@ -62,7 +68,11 @@ function Days2Command() {
   }, [calendars]);
 
   // Fetch upcoming events
-  const { data: upcomingEvents, isLoading: eventsLoading } = useCachedPromise(
+  const {
+    data: upcomingEvents,
+    isLoading: eventsLoading,
+    error: upcomingError,
+  } = useCachedPromise(
     fetchUpcomingAllDayEvents,
     [selectedIds ?? [], calendarMap],
     {
@@ -71,7 +81,11 @@ function Days2Command() {
   );
 
   // Fetch past events (only when searching)
-  const { data: pastEvents, isLoading: pastEventsLoading } = useCachedPromise(
+  const {
+    data: pastEvents,
+    isLoading: pastEventsLoading,
+    error: pastError,
+  } = useCachedPromise(
     fetchPastAllDayEvents,
     [selectedIds ?? [], calendarMap],
     { execute: !!searchText && !!selectedIds && selectedIds.length > 0 },
@@ -82,6 +96,46 @@ function Days2Command() {
     selectedIdsLoading ||
     eventsLoading ||
     (!!searchText && pastEventsLoading);
+
+  useEffect(() => {
+    if (calendarsError) {
+      showToast({
+        style: Toast.Style.Failure,
+        title: "Failed to fetch calendars",
+        message: String(calendarsError),
+      });
+    }
+  }, [calendarsError]);
+
+  useEffect(() => {
+    if (selectedIdsError) {
+      showToast({
+        style: Toast.Style.Failure,
+        title: "Failed to read selected calendars",
+        message: String(selectedIdsError),
+      });
+    }
+  }, [selectedIdsError]);
+
+  useEffect(() => {
+    if (upcomingError) {
+      showToast({
+        style: Toast.Style.Failure,
+        title: "Failed to fetch upcoming events",
+        message: String(upcomingError),
+      });
+    }
+  }, [upcomingError]);
+
+  useEffect(() => {
+    if (pastError) {
+      showToast({
+        style: Toast.Style.Failure,
+        title: "Failed to fetch past events",
+        message: String(pastError),
+      });
+    }
+  }, [pastError]);
 
   // Filter by calendar dropdown
   const filteredUpcoming = useMemo(() => {
@@ -283,12 +337,20 @@ function EventListItem(props: {
             <Action
               title="Manage Calendars"
               icon={Icon.List}
-              onAction={() =>
-                launchCommand({
-                  name: "manage-calendars",
-                  type: LaunchType.UserInitiated,
-                })
-              }
+              onAction={async () => {
+                try {
+                  await launchCommand({
+                    name: "manage-calendars",
+                    type: LaunchType.UserInitiated,
+                  });
+                } catch (e) {
+                  showToast({
+                    style: Toast.Style.Failure,
+                    title: "Unable to open Manage Calendars",
+                    message: String(e),
+                  });
+                }
+              }}
             />
           </ActionPanel.Section>
         </ActionPanel>
